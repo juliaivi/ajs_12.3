@@ -13,21 +13,32 @@ test('new card should be empty', () => {
   test('testing the instanceOfCountable function, receiving true', () => {
     const cart = new Cart();
     cart.add(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200));
-    let result = instanceOfCountable(cart);
+    let result = instanceOfCountable(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200));
     expect(result).toBeFalsy();
   });
 
   test('testing the instanceOfCountable function, receiving false', () => {
     const cart = new Cart();
     cart.add(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
-    let result = instanceOfCountable(cart);
+    let result = instanceOfCountable(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
     expect(result).toBeTruthy();
+  });
+
+  test("if there is such an element and there shouldn't be a second one", () => {
+    const cart = new Cart();
+    cart.add(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200));
+    cart.add(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200));
+    expect(cart.items.length).toBe(1);
   });
 
   test('wrong type', () => {
     const cart = new Cart();
-    cart.add(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
-    expect(cart.add(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200))).toThrow();
+  
+    expect(() => {
+        cart.add(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
+        cart.add(new Book(6, 'War and Piece', 'Leo Tolstoy', 2000, 1200))
+    }
+      ).toThrow(new Error("Unexpected item type! Item should be countable."));
   });
 
 test('adding 3 elements to an array', () => {
@@ -41,10 +52,11 @@ test('adding 3 elements to an array', () => {
 test('price of goods without discount', () => {
   const cart = new Cart();
   cart.add(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
+  cart.add(new Book(7, 'War and Piece', 'Leo Tolstoy', 1200, 2000 ));
   cart.add(new MusicAlbum(1011, 'Meteora', 'Linkin Park', 900));
   cart.add(new Movie(4, 'Мстители', 'The Avengers', 2015,  'США', 'Avengers Assemble!', ['фантастика', 'боевик', 'фэнтези', 'приключения'], '167 мин. / 02:17', 1000));
-  expect(cart.totalCost()).toBe(2400);
-})
+  expect(cart.totalCost()).toBe(4400);
+});
 
 test('price of goods at a discount', () => {
   const cart = new Cart();
@@ -52,17 +64,14 @@ test('price of goods at a discount', () => {
   cart.add(new MusicAlbum(1011, 'Meteora', 'Linkin Park', 900));
   cart.add(new Movie(4, 'Мстители', 'The Avengers', 2015,  'США', 'Avengers Assemble!', ['фантастика', 'боевик', 'фэнтези', 'приключения'], '167 мин. / 02:17', 1000));
   expect(cart.discountPrice(0.2)).toBe(1920);
-})
+});
 
-test('', () => {
+test('deleting an element if it is alone', () => {
   const cart = new Cart();
   cart.add(new Mobiel(6, 'telechon', 'Aplle', 500, 1));
-  cart.add(new MusicAlbum(1011, 'Meteora', 'Linkin Park', 900));
-  cart.add(new Movie(4, 'Мстители', 'The Avengers', 2015,  'США', 'Avengers Assemble!', ['фантастика', 'боевик', 'фэнтези', 'приключения'], '167 мин. / 02:17', 1000));
-  cart.add(new Book(3, 'War and Piece', 'Leo Tolstoy', 2000, 1200));
-  cart.deleteItem(3);
-  expect(cart.items.length).toBe(3);
-})
+  cart.deleteItem(6);
+  expect(cart.items.length).toBe(0);
+});
 
 test('product removal', () => {
   const cart = new Cart();
